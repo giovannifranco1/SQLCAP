@@ -1,20 +1,60 @@
-# SQLCAP - Detector de SQL Injection baseado em Headers
+# SQLCAP - Scanner de SQL Injection baseado em Headers
 
-SQLCAP (SQL Injection Blind Headers Capture) é uma ferramenta de linha de comando para testar vulnerabilidades de SQL Injection em headers HTTP. A ferramenta funciona enviando múltiplas requisições para um alvo, injetando payloads maliciosos em diferentes headers HTTP e analisando as respostas em busca de padrões que possam indicar vulnerabilidades.
+SQLCAP (SQL Injection Headers Scanner) é uma ferramenta de linha de comando em Rust para detectar vulnerabilidades de SQL Injection em headers HTTP, utilizando uma abordagem modular e orientada a objetos.
 
 ## Recursos
 
-- Teste de múltiplos headers com múltiplos payloads
-- Detecção de injeção SQL baseada em tempo (time-based blind)
-- Detecção de injeção SQL baseada em diferenças de resposta (boolean-based blind)
-- Análise de anomalias em status HTTP, tempo de resposta e tamanho do corpo
-- Relatório detalhado de pontos suspeitos
-- Modo verbose para depuração
+- Detecção de SQL Injection em headers HTTP
+- Suporte a múltiplos headers e payloads
+- Análise de vulnerabilidades baseada em:
+  - Tempo de resposta (time-based)
+  - Diferenças no tamanho da resposta (boolean-based)
+  - Alterações no código de status HTTP
+- Interface visual rica com cores e ícones
+- Arquitetura modular seguindo boas práticas de Rust
 
-## Requisitos
+## Estrutura do Projeto
 
-- Rust 2021 edition ou superior
-- Cargo
+```
+src/
+├── main.rs                # Ponto de entrada da aplicação
+├── core/                  # Regras de negócio e modelos
+│   ├── mod.rs
+│   ├── models.rs          # Estruturas de dados principais
+│   └── scanner.rs         # Lógica central de escaneamento
+├── services/              # Serviços de aplicação
+│   ├── mod.rs
+│   └── scan_service.rs    # Serviço de orquestração de scan
+├── infra/                 # Implementações técnicas
+│   ├── mod.rs
+│   └── file_reader.rs     # Leitor de arquivos
+├── handlers/              # Manipuladores de entrada
+│   ├── mod.rs
+│   └── cli_handler.rs     # Handler da interface de linha de comando
+└── shared/                # Componentes compartilhados
+    ├── mod.rs
+    └── ui.rs              # Interface do usuário no terminal
+```
+
+## Uso
+
+```bash
+cargo run -- --url <URL> --payload <ARQUIVO_PAYLOADS> --header <ARQUIVO_HEADERS> [--timeout <MS>] [--verbose]
+```
+
+### Parâmetros
+
+- `--url`: URL do alvo a ser testado
+- `--payload`: Caminho para o arquivo com os payloads de SQL Injection (um por linha)
+- `--header`: Caminho para o arquivo com os nomes dos headers a serem testados (um por linha)
+- `--timeout`: Limiar em milissegundos para considerar uma resposta suspeita (padrão: 3000ms)
+- `--verbose`: Ativar modo detalhado
+
+## Exemplo
+
+```bash
+cargo run -- --url https://exemplo.com/api --payload payloads/sqli_payloads.txt --header payloads/headers.txt --verbose
+```
 
 ## Instalação
 
@@ -28,66 +68,16 @@ cargo build --release
 
 O binário compilado estará disponível em `target/release/sqlcap`.
 
-## Uso
+## Desenvolvimento
 
-```bash
-sqlcap --url <URL> --payload <ARQUIVO_PAYLOADS> --header <ARQUIVO_HEADERS> [--timeout <MS>] [--verbose]
-```
+O projeto segue uma arquitetura modular onde:
 
-### Parâmetros
+- **Core**: Contém a lógica central e as estruturas de dados
+- **Services**: Orquestra a execução de operações complexas
+- **Infra**: Fornece implementações técnicas (IO, rede, etc.)
+- **Handlers**: Gerencia a interação com o usuário
+- **Shared**: Disponibiliza utilidades reutilizáveis
 
-- `--url`: URL do alvo a ser testado
-- `--payload`: Caminho para o arquivo contendo payloads de SQL Injection (um por linha)
-- `--header`: Caminho para o arquivo contendo nomes de headers a serem testados (um por linha)
-- `--timeout`: Limiar de tempo em milissegundos para considerar uma resposta suspeita (padrão: 3000ms)
-- `--verbose`: Ativa o modo detalhado de output
+## Contribuições
 
-### Exemplo
-
-```bash
-sqlcap --url https://exemplo.com/api/dados --payload payloads/sqli_payloads.txt --header payloads/headers.txt --timeout 5000
-```
-
-## Formato dos Arquivos
-
-### Arquivo de Headers
-
-Um arquivo de texto simples com um header por linha. Exemplo:
-
-```
-# headers.txt
-User-Agent
-X-Forwarded-For
-User-Id
-```
-
-### Arquivo de Payloads
-
-Um arquivo de texto simples com um payload por linha. Exemplo:
-
-```
-# sqli_payloads.txt
-' OR '1'='1
-1' AND SLEEP(5) -- -
-' waitfor delay '0:0:5' --
-```
-
-## Como a Ferramenta Funciona
-
-1. A ferramenta estabelece uma linha de base enviando uma requisição sem modificações
-2. Para cada header no arquivo de headers, substitui o valor por cada payload no arquivo de payloads
-3. Compara as respostas com a linha de base, procurando:
-   - Diferenças significativas no tempo de resposta (indicativo de time-based SQLi)
-   - Diferenças no tamanho da resposta (indicativo de boolean-based SQLi)
-   - Mudanças no código de status HTTP
-4. Gera um relatório com os pontos suspeitos encontrados
-
-## Limitações
-
-- A ferramenta não confirma automaticamente a existência de vulnerabilidades, apenas identifica pontos suspeitos
-- Falsos positivos podem ocorrer, especialmente em aplicações com respostas variáveis
-- O teste não inclui payloads para outras vulnerabilidades além de SQL Injection
-
-## Contribuição
-
-Contribuições são bem-vindas! Sinta-se à vontade para enviar pull requests ou abrir issues no GitHub. 
+Contribuições são bem-vindas! Sinta-se à vontade para enviar pull requests ou abrir issues. 
