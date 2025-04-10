@@ -1,7 +1,7 @@
+use super::super::cli::ui::TerminalUI;
 use crate::core::models::{Baseline, ScanResult};
 use crate::core::scanner::SqliScanner;
 use crate::infra::file_reader::FileReader;
-use crate::shared::ui::TerminalUI;
 use anyhow::{Context, Result};
 use reqwest::StatusCode;
 use std::collections::HashMap;

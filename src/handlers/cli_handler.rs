@@ -1,6 +1,6 @@
+use super::super::cli::ui::TerminalUI;
 use crate::core::models::Args;
 use crate::services::scan_service::ScanService;
-use crate::shared::ui::TerminalUI;
 use anyhow::Result;
 use std::time::Duration;
 

@@ -1,4 +1,3 @@
-```
   ██████   █████   ██▓     ▄████▄   ▄▄▄       ██▓███  
  ▒██    ▒ ▒██▓  ██▒▓██▒    ▒██▀ ▀█  ▒████▄    ▓██░  ██▒
  ░ ▓██▄   ▒██▒  ██░▒██░    ▒▓█    ▄ ▒██  ▀█▄  ▓██░ ██▓▒
@@ -30,7 +29,8 @@ SQLCAP (SQL Injection Headers Scanner) is a Rust command-line tool designed to d
 
 ```
 src/
-├── main.rs                # Application entry point
+├── lib.rs                 # Library entry point
+├── main.rs                # Binary entry point
 ├── core/                  # Business rules and models
 │   ├── mod.rs
 │   ├── models.rs          # Main data structures
@@ -44,7 +44,7 @@ src/
 ├── handlers/              # Input handlers
 │   ├── mod.rs
 │   └── cli_handler.rs     # Command-line interface handler
-└── shared/                # Shared components
+└── cli/                   # CLI components
     ├── mod.rs
     └── ui.rs              # Terminal user interface
 ```
@@ -89,7 +89,7 @@ The project follows a modular architecture where:
 - **Services**: Orchestrates the execution of complex operations
 - **Infra**: Provides technical implementations (IO, network, etc.)
 - **Handlers**: Manages user interaction
-- **Shared**: Provides reusable utilities
+- **CLI**: Provides terminal user interface and CLI components
 
 ## Contributions
 
