@@ -240,13 +240,15 @@ impl TerminalUI {
         );
         print!("\r");
 
-        // Print the progress bar hacking style
+        // Print the progress bar hacking style with highlighted header and payload
         print!(
-            "{} {} {} {}",
+            "{} {} {} {}{} {}",
             "[*]".bright_green(),
             format!("Progress: [{}] {}%", progress_bar, progress).bright_cyan(),
             "| Target:".bright_red(),
-            format!("{}:{}", header_name, payload).bright_white()
+            header_name.bright_white().bold(),
+            ":".bright_white(),
+            payload.bright_green().bold()
         );
 
         // Force the output to be printed immediately
