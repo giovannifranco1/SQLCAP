@@ -3,29 +3,31 @@ use chrono::Local;
 use colored::Colorize;
 use reqwest::StatusCode;
 use std::io::Write;
+use std::thread::sleep;
+use std::time::Duration;
 
-/// Módulo responsável pela interface do usuário no terminal
+/// Module responsible for the terminal user interface
 pub struct TerminalUI;
 
 impl TerminalUI {
-    /// Exibe o banner inicial do programa
+    /// Displays the initial program banner
     pub fn print_banner() {
         println!();
         println!(
             "{}",
             r#"
   ██████   █████   ██▓     ▄████▄   ▄▄▄       ██▓███  
-▒██    ▒ ▒██▓  ██▒▓██▒    ▒██▀ ▀█  ▒████▄    ▓██░  ██▒
-░ ▓██▄   ▒██▒  ██░▒██░    ▒▓█    ▄ ▒██  ▀█▄  ▓██░ ██▓▒
-  ▒   ██▒░██  █▀ ░▒██░    ▒▓▓▄ ▄██▒░██▄▄▄▄██ ▒██▄█▓▒ ▒
-▒██████▒▒░▒███▒█▄ ░██████▒▒ ▓███▀ ░ ▓█   ▓██▒▒██▒ ░  ░
-▒ ▒▓▒ ▒ ░░░ ▒▒░ ▒ ░ ▒░▓  ░░ ░▒ ▒  ░ ▒▒   ▓▒█░▒▓▒░ ░  ░
-░ ░▒  ░ ░ ░ ▒░  ░ ░ ░ ▒  ░  ░  ▒     ▒   ▒▒ ░░▒ ░     
-░  ░  ░     ░   ░   ░ ░   ░          ░   ▒   ░░       
-      ░      ░        ░  ░░ ░            ░  ░         
-                          ░                                                
+ ▒██    ▒ ▒██▓  ██▒▓██▒    ▒██▀ ▀█  ▒████▄    ▓██░  ██▒
+ ░ ▓██▄   ▒██▒  ██░▒██░    ▒▓█    ▄ ▒██  ▀█▄  ▓██░ ██▓▒
+   ▒   ██▒░██  █▀ ░▒██░    ▒▓▓▄ ▄██▒░██▄▄▄▄██ ▒██▄█▓▒ ▒
+ ▒██████▒▒░▒███▒█▄ ░██████▒▒ ▓███▀ ░ ▓█   ▓██▒▒██▒ ░  ░
+ ▒ ▒▓▒ ▒ ░░░ ▒▒░ ▒ ░ ▒░▓  ░░ ░▒ ▒  ░ ▒▒   ▓▒█░▒▓▒░ ░  ░
+ ░ ░▒  ░ ░ ░ ▒░  ░ ░ ░ ▒  ░  ░  ▒     ▒   ▒▒ ░░▒ ░     
+ ░  ░  ░     ░   ░   ░ ░   ░          ░   ▒   ░░       
+       ░      ░        ░  ░░ ░            ░  ░         
+                           ░                                                
 "#
-            .bright_yellow()
+            .bright_red()
         );
 
         println!(
@@ -59,15 +61,18 @@ impl TerminalUI {
             "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛".bright_blue()
         );
         println!();
+
+        // Add a 1 second sleep after showing the banner
+        sleep(Duration::from_secs(1));
     }
 
-    /// Exibe um cabeçalho de seção
+    /// Displays a section header
     pub fn print_section_header(text: &str) {
         println!();
         println!("{} {}", "━━━━".bright_cyan(), text.bold().bright_white());
     }
 
-    /// Cria uma barra de progresso visual
+    /// Creates a visual progress bar
     pub fn create_progress_bar(progress: u32) -> String {
         let bar_length = 25;
         let completed = (progress as f32 / 100.0 * bar_length as f32) as usize;
@@ -84,7 +89,7 @@ impl TerminalUI {
         bar
     }
 
-    /// Exibe informações de configuração
+    /// Displays configuration information
     pub fn print_config(
         url: &str,
         payload_file: &str,
@@ -92,7 +97,7 @@ impl TerminalUI {
         timeout: u64,
         verbose: bool,
     ) {
-        Self::print_section_header("📋 CONFIGURAÇÃO");
+        Self::print_section_header("📋 CONFIGURATION");
         println!("{} {}", "🌐 URL:".bright_yellow(), url.bright_white());
         println!(
             "{} {}",
@@ -113,19 +118,19 @@ impl TerminalUI {
         if verbose {
             println!(
                 "{} {}",
-                "🔊 Modo verbose:".bright_yellow(),
-                "Ativado".bright_green()
+                "🔊 Verbose mode:".bright_yellow(),
+                "Enabled".bright_green()
             );
         } else {
             println!(
                 "{} {}",
-                "🔊 Modo verbose:".bright_yellow(),
-                "Desativado".bright_red()
+                "🔊 Verbose mode:".bright_yellow(),
+                "Disabled".bright_red()
             );
         }
     }
 
-    /// Exibe informações de preparação
+    /// Displays preparation information
     pub fn print_preparation_info(
         headers_count: usize,
         payloads_count: usize,
@@ -133,27 +138,27 @@ impl TerminalUI {
         headers: &[String],
         payloads: &[String],
     ) {
-        Self::print_section_header("🔍 PREPARAÇÃO");
+        Self::print_section_header("🔍 PREPARATION");
         println!(
             "{} {}",
-            "📊 Headers para testar:".bright_yellow(),
+            "📊 Headers to test:".bright_yellow(),
             headers_count.to_string().bright_white()
         );
         println!(
             "{} {}",
-            "🧪 Payloads para injetar:".bright_yellow(),
+            "🧪 Payloads to inject:".bright_yellow(),
             payloads_count.to_string().bright_white()
         );
         println!(
             "{} {}",
-            "🔢 Total de testes a realizar:".bright_yellow(),
+            "🔢 Total tests to run:".bright_yellow(),
             (headers_count * payloads_count).to_string().bright_white()
         );
 
         if verbose {
-            Self::print_section_header("📝 DETALHES DOS DADOS");
+            Self::print_section_header("📝 DATA DETAILS");
 
-            println!("{}", "🔤 Headers a testar:".bright_yellow());
+            println!("{}", "🔤 Headers to test:".bright_yellow());
             for (i, header) in headers.iter().enumerate() {
                 println!(
                     "   {}. {}",
@@ -161,27 +166,27 @@ impl TerminalUI {
                     header.bright_white()
                 );
                 if i >= 9 && headers.len() > 12 {
-                    println!("   ... mais {} headers", headers.len() - 10);
+                    println!("   ... and {} more headers", headers.len() - 10);
                     break;
                 }
             }
         }
 
-        Self::print_section_header("🚀 EXECUÇÃO");
+        Self::print_section_header("🚀 EXECUTION");
         println!(
             "{}",
-            "Iniciando scan de vulnerabilidades SQL Injection via headers..."
+            "Starting SQL Injection vulnerability scan via headers..."
                 .bright_green()
                 .bold()
         );
     }
 
-    /// Mostra mensagem de inicialização do teste para um header
+    /// Shows initialization message for a header test
     pub fn print_header_test_start(header_name: &str, verbose: bool) {
         println!();
         println!(
             "{} '{}'",
-            "🔍 Testando header:".bright_cyan().bold(),
+            "🔍 Testing header:".bright_cyan().bold(),
             header_name.bright_white()
         );
 
@@ -194,19 +199,19 @@ impl TerminalUI {
             println!(
                 "{} {} {}",
                 "┃".bright_blue(),
-                " [*] Iniciando testes de injeção...".bright_green(),
+                " [*] Starting injection tests...".bright_green(),
                 "┃".bright_blue()
             );
             println!(
                 "{} {} {}",
                 "┃".bright_blue(),
-                " [*] Analisando vulnerabilidades...".bright_green(),
+                " [*] Analyzing vulnerabilities...".bright_green(),
                 "┃".bright_blue()
             );
             println!(
                 "{} {} {}",
                 "┃".bright_blue(),
-                " [+] Scanner em execução...".bright_green(),
+                " [+] Scanner running...".bright_green(),
                 "┃".bright_blue()
             );
             println!(
@@ -216,7 +221,7 @@ impl TerminalUI {
         }
     }
 
-    /// Atualiza a barra de progresso
+    /// Updates the progress bar
     pub fn update_progress_bar(
         completed_tests: usize,
         total_tests: usize,
@@ -226,7 +231,7 @@ impl TerminalUI {
         let progress = (completed_tests as f64 / total_tests as f64 * 100.0) as u32;
         let progress_bar = Self::create_progress_bar(progress);
 
-        // Limpa a linha anterior antes de imprimir a nova atualização
+        // Clear the previous line before printing the new update
         print!("\r");
         print!(
             "{}",
@@ -235,20 +240,20 @@ impl TerminalUI {
         );
         print!("\r");
 
-        // Imprime a barra de progresso estilo hacking
+        // Print the progress bar hacking style
         print!(
             "{} {} {} {}",
             "[*]".bright_green(),
-            format!("Progresso: [{}] {}%", progress_bar, progress).bright_cyan(),
+            format!("Progress: [{}] {}%", progress_bar, progress).bright_cyan(),
             "| Target:".bright_red(),
             format!("{}:{}", header_name, payload).bright_white()
         );
 
-        // Força a saída a ser impressa imediatamente
+        // Force the output to be printed immediately
         std::io::stdout().flush().ok();
     }
 
-    /// Exibe o resultado de um teste de injeção
+    /// Displays the result of an injection test
     pub fn print_test_result(
         url: &str,
         header_name: &str,
@@ -259,7 +264,7 @@ impl TerminalUI {
         suspicious: bool,
         reason: &Option<String>,
     ) {
-        // Formata o status com cor
+        // Format the status with color
         let status_text = if status.is_success() {
             status.to_string().bright_green()
         } else if status.is_client_error() {
@@ -270,7 +275,7 @@ impl TerminalUI {
             status.to_string().bright_white()
         };
 
-        // Formato compacto para cada teste (estilo hacking)
+        // Compact format for each test (hacking style)
         println!("");
         println!(
             "{}",
@@ -325,26 +330,26 @@ impl TerminalUI {
         );
     }
 
-    /// Exibe a linha de base estabelecida
+    /// Displays the established baseline
     pub fn print_baseline(baseline: &Baseline) {
         println!(
             "{}",
-            "⏳ Estabelecendo linha de base para comparação...".bright_blue()
+            "⏳ Establishing baseline for comparison...".bright_blue()
         );
         println!(
-            "{} Status: {}, Tempo: {:.2?}, Tamanho: {} bytes",
-            "📊 Linha de base:".bright_blue(),
+            "{} Status: {}, Time: {:.2?}, Size: {} bytes",
+            "📊 Baseline:".bright_blue(),
             baseline.status.to_string().bright_white(),
             baseline.duration_ms,
             baseline.body_size.to_string().bright_white()
         );
     }
 
-    /// Exibe o resumo final do scan
+    /// Displays the final scan summary
     pub fn print_summary(url: &str, total_tests: usize, suspicious_results: &[ScanResult]) {
-        Self::print_section_header("📊 RESULTADOS");
+        Self::print_section_header("📊 RESULTS");
 
-        // Box de resumo estilo hacking
+        // Summary box hacking style
         println!(
             "{}",
             "┌────────────────[ SCAN SUMMARY ]─────────────────┐".bright_green()
@@ -382,22 +387,22 @@ impl TerminalUI {
             "└────────────────────────────────────────────────┘".bright_green()
         );
 
-        // Detalhes das vulnerabilidades encontradas
+        // Details of vulnerabilities found
         if !suspicious_results.is_empty() {
             Self::print_vulnerability_details(suspicious_results);
         } else {
             println!(
                 "\n{}",
-                "✅ Nenhuma vulnerabilidade SQL Injection óbvia detectada."
+                "✅ No obvious SQL Injection vulnerabilities detected."
                     .bright_green()
                     .bold()
             );
         }
     }
 
-    /// Exibe os detalhes das vulnerabilidades encontradas
+    /// Displays the details of vulnerabilities found
     pub fn print_vulnerability_details(results: &[ScanResult]) {
-        Self::print_section_header("🚨 DETALHES DAS VULNERABILIDADES");
+        Self::print_section_header("🚨 VULNERABILITY DETAILS");
 
         println!(
             "{}",
@@ -421,7 +426,7 @@ impl TerminalUI {
                 result.payload.bright_red().bold()
             );
 
-            // Status com cor
+            // Status with color
             let status_text = if result.status >= 200 && result.status < 300 {
                 result.status.to_string().bright_green()
             } else if result.status >= 400 && result.status < 500 {
@@ -436,16 +441,16 @@ impl TerminalUI {
                 "│ {} {}, {} {}ms, {} {} bytes",
                 "📡 Status:".bright_yellow(),
                 status_text,
-                "⏱️  Tempo:".bright_yellow(),
+                "⏱️  Time:".bright_yellow(),
                 result.duration_ms.to_string().bright_white(),
-                "📏 Tamanho:".bright_yellow(),
+                "📏 Size:".bright_yellow(),
                 result.body_size.to_string().bright_white()
             );
 
             if let Some(reason) = &result.reason {
                 println!(
                     "│ {} {}",
-                    "⚠️  Motivo:".bright_yellow(),
+                    "⚠️  Reason:".bright_yellow(),
                     reason.bright_red()
                 );
             }
@@ -459,7 +464,7 @@ impl TerminalUI {
 
         println!(
             "\n{}",
-            "🚨 Possíveis vulnerabilidades encontradas! Analise os resultados para confirmação."
+            "🚨 Possible vulnerabilities found! Analyze results for confirmation."
                 .bright_red()
                 .bold()
         );

@@ -1,83 +1,83 @@
-# SQLCAP - Scanner de SQL Injection baseado em Headers
+# SQLCAP - HTTP Headers SQL Injection Scanner
 
-SQLCAP (SQL Injection Headers Scanner) é uma ferramenta de linha de comando em Rust para detectar vulnerabilidades de SQL Injection em headers HTTP, utilizando uma abordagem modular e orientada a objetos.
+SQLCAP (SQL Injection Headers Scanner) is a Rust command-line tool designed to detect SQL Injection vulnerabilities in HTTP headers, using a modular and object-oriented approach.
 
-## Recursos
+## Features
 
-- Detecção de SQL Injection em headers HTTP
-- Suporte a múltiplos headers e payloads
-- Análise de vulnerabilidades baseada em:
-  - Tempo de resposta (time-based)
-  - Diferenças no tamanho da resposta (boolean-based)
-  - Alterações no código de status HTTP
-- Interface visual rica com cores e ícones
-- Arquitetura modular seguindo boas práticas de Rust
+- SQL Injection detection in HTTP headers
+- Support for multiple headers and payloads
+- Vulnerability analysis based on:
+  - Response time (time-based)
+  - Differences in response size (boolean-based)
+  - Changes in HTTP status code
+- Rich visual interface with colors and icons
+- Modular architecture following Rust best practices
 
-## Estrutura do Projeto
+## Project Structure
 
 ```
 src/
-├── main.rs                # Ponto de entrada da aplicação
-├── core/                  # Regras de negócio e modelos
+├── main.rs                # Application entry point
+├── core/                  # Business rules and models
 │   ├── mod.rs
-│   ├── models.rs          # Estruturas de dados principais
-│   └── scanner.rs         # Lógica central de escaneamento
-├── services/              # Serviços de aplicação
+│   ├── models.rs          # Main data structures
+│   └── scanner.rs         # Core scanning logic
+├── services/              # Application services
 │   ├── mod.rs
-│   └── scan_service.rs    # Serviço de orquestração de scan
-├── infra/                 # Implementações técnicas
+│   └── scan_service.rs    # Scan orchestration service
+├── infra/                 # Technical implementations
 │   ├── mod.rs
-│   └── file_reader.rs     # Leitor de arquivos
-├── handlers/              # Manipuladores de entrada
+│   └── file_reader.rs     # File reader
+├── handlers/              # Input handlers
 │   ├── mod.rs
-│   └── cli_handler.rs     # Handler da interface de linha de comando
-└── shared/                # Componentes compartilhados
+│   └── cli_handler.rs     # Command-line interface handler
+└── shared/                # Shared components
     ├── mod.rs
-    └── ui.rs              # Interface do usuário no terminal
+    └── ui.rs              # Terminal user interface
 ```
 
-## Uso
+## Usage
 
 ```bash
-cargo run -- --url <URL> --payload <ARQUIVO_PAYLOADS> --header <ARQUIVO_HEADERS> [--timeout <MS>] [--verbose]
+cargo run -- --url <URL> --payload <PAYLOADS_FILE> --header <HEADERS_FILE> [--timeout <MS>] [--verbose]
 ```
 
-### Parâmetros
+### Parameters
 
-- `--url`: URL do alvo a ser testado
-- `--payload`: Caminho para o arquivo com os payloads de SQL Injection (um por linha)
-- `--header`: Caminho para o arquivo com os nomes dos headers a serem testados (um por linha)
-- `--timeout`: Limiar em milissegundos para considerar uma resposta suspeita (padrão: 3000ms)
-- `--verbose`: Ativar modo detalhado
+- `--url`: Target URL to be tested
+- `--payload`: Path to the file with SQL Injection payloads (one per line)
+- `--header`: Path to the file with the names of headers to be tested (one per line)
+- `--timeout`: Threshold in milliseconds to consider a response suspicious (default: 3000ms)
+- `--verbose`: Enable detailed mode
 
-## Exemplo
+## Example
 
 ```bash
-cargo run -- --url https://exemplo.com/api --payload payloads/sqli_payloads.txt --header payloads/headers.txt --verbose
+cargo run -- --url https://example.com/api --payload payloads/sqli_payloads.txt --header payloads/headers.txt --verbose
 ```
 
-## Instalação
+## Installation
 
-Clone o repositório e compile o projeto:
+Clone the repository and build the project:
 
 ```bash
-git clone https://github.com/seu-usuario/sqlcap.git
+git clone https://github.com/your-username/sqlcap.git
 cd sqlcap
 cargo build --release
 ```
 
-O binário compilado estará disponível em `target/release/sqlcap`.
+The compiled binary will be available at `target/release/sqlcap`.
 
-## Desenvolvimento
+## Development
 
-O projeto segue uma arquitetura modular onde:
+The project follows a modular architecture where:
 
-- **Core**: Contém a lógica central e as estruturas de dados
-- **Services**: Orquestra a execução de operações complexas
-- **Infra**: Fornece implementações técnicas (IO, rede, etc.)
-- **Handlers**: Gerencia a interação com o usuário
-- **Shared**: Disponibiliza utilidades reutilizáveis
+- **Core**: Contains the central logic and data structures
+- **Services**: Orchestrates the execution of complex operations
+- **Infra**: Provides technical implementations (IO, network, etc.)
+- **Handlers**: Manages user interaction
+- **Shared**: Provides reusable utilities
 
-## Contribuições
+## Contributions
 
-Contribuições são bem-vindas! Sinta-se à vontade para enviar pull requests ou abrir issues. 
+Contributions are welcome! Feel free to submit pull requests or open issues. 
