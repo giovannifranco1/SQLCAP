@@ -1,0 +1,12 @@
+# Headers comuns para teste de SQL Injection
+User-Agent
+X-Forwarded-For
+Referer
+Cookie
+X-Api-Key
+X-Custom-Auth
+Authorization
+User-Id
+Client-Id
+alias
+user 
