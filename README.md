@@ -1,3 +1,16 @@
+```
+  ██████   █████   ██▓     ▄████▄   ▄▄▄       ██▓███  
+ ▒██    ▒ ▒██▓  ██▒▓██▒    ▒██▀ ▀█  ▒████▄    ▓██░  ██▒
+ ░ ▓██▄   ▒██▒  ██░▒██░    ▒▓█    ▄ ▒██  ▀█▄  ▓██░ ██▓▒
+   ▒   ██▒░██  █▀ ░▒██░    ▒▓▓▄ ▄██▒░██▄▄▄▄██ ▒██▄█▓▒ ▒
+ ▒██████▒▒░▒███▒█▄ ░██████▒▒ ▓███▀ ░ ▓█   ▓██▒▒██▒ ░  ░
+ ▒ ▒▓▒ ▒ ░░░ ▒▒░ ▒ ░ ▒░▓  ░░ ░▒ ▒  ░ ▒▒   ▓▒█░▒▓▒░ ░  ░
+ ░ ░▒  ░ ░ ░ ▒░  ░ ░ ░ ▒  ░  ░  ▒     ▒   ▒▒ ░░▒ ░     
+ ░  ░  ░     ░   ░   ░ ░   ░          ░   ▒   ░░       
+       ░      ░        ░  ░░ ░            ░  ░         
+                           ░                           
+```
+
 # SQLCAP - HTTP Headers SQL Injection Scanner
 
 SQLCAP (SQL Injection Headers Scanner) is a Rust command-line tool designed to detect SQL Injection vulnerabilities in HTTP headers, using a modular and object-oriented approach.
