@@ -18,9 +18,9 @@ impl SqliScanner {
     /// Cria uma nova instância do scanner
     pub fn new(timeout_ms: u64) -> Result<Self> {
         let client = Client::builder()
-            .timeout(Duration::from_secs(60))
+            .timeout(Duration::from_millis(timeout_ms))
             .build()
-            .context("Falha ao criar cliente HTTP")?;
+            .context("Failed to create HTTP client")?;
 
         Ok(Self {
             client,
@@ -65,7 +65,7 @@ impl SqliScanner {
             .headers(header_map)
             .send()
             .await
-            .with_context(|| format!("Falha ao enviar requisição para: {}", url))?;
+            .with_context(|| format!("Failed to send request to: {}", url))?;
 
         // Calcula o tempo de resposta
         let duration = start_time.elapsed();
@@ -75,7 +75,7 @@ impl SqliScanner {
         let body = response
             .text()
             .await
-            .context("Falha ao ler corpo da resposta")?;
+            .context("Failed to read response body")?;
         let body_size = body.len();
 
         // Analisa a resposta para detecção de vulnerabilidades
@@ -107,14 +107,14 @@ impl SqliScanner {
             .get(url)
             .send()
             .await
-            .with_context(|| format!("Falha ao estabelecer linha de base para: {}", url))?;
+            .with_context(|| format!("Failed to establish baseline for: {}", url))?;
 
         let duration = start_time.elapsed();
         let status = response.status();
         let body = response
             .text()
             .await
-            .context("Falha ao ler corpo da resposta base")?;
+            .context("Failed to read baseline response body")?;
 
         Ok(Baseline::new(status, duration.as_millis(), body.len()))
     }

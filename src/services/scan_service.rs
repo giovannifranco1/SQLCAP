@@ -8,7 +8,7 @@ use std::collections::HashMap;
 use std::path::Path;
 use tokio::time::Duration;
 
-/// Serviço responsável por orquestrar o processo de escaneamento
+/// Service responsible for orchestrating the scanning process
 pub struct ScanService {
     pub scanner: SqliScanner,
     url: String,
@@ -17,7 +17,7 @@ pub struct ScanService {
 }
 
 impl ScanService {
-    /// Cria uma nova instância do serviço de escaneamento
+    /// Creates a new instance of the scanning service
     pub async fn new<P1, P2>(
         url: &str,
         header_file: P1,
@@ -28,10 +28,10 @@ impl ScanService {
         P1: AsRef<Path>,
         P2: AsRef<Path>,
     {
-        // Cria o scanner
+        // Create scanner
         let scanner = SqliScanner::new(timeout_ms)?;
 
-        // Lê os arquivos de headers e payloads
+        // Read headers and payloads files
         let headers = FileReader::read_lines_from_file(header_file)?;
         let payloads = FileReader::read_lines_from_file(payload_file)?;
 
@@ -43,16 +43,16 @@ impl ScanService {
         })
     }
 
-    /// Estabelece a linha de base para comparação
+    /// Establishes baseline for comparison
     pub async fn establish_baseline(&mut self) -> Result<&Baseline> {
         self.scanner.establish_baseline(&self.url).await
     }
 
-    /// Executa o escaneamento completo
+    /// Executes complete scan
     pub async fn run_scan(&mut self) -> Result<(Vec<ScanResult>, HashMap<String, Vec<u128>>)> {
-        // Estabelece a linha de base se ainda não foi feito
+        // Establish baseline if not done yet
         if self.scanner.establish_baseline(&self.url).await.is_err() {
-            return Err(anyhow::anyhow!("Falha ao estabelecer linha de base"));
+            return Err(anyhow::anyhow!("Failed to establish baseline"));
         }
 
         let mut suspicious_results: Vec<ScanResult> = Vec::new();
@@ -61,20 +61,20 @@ impl ScanService {
         let total_tests = self.total_tests();
         let mut completed_tests = 0;
 
-        // Para cada header, testa todos os payloads
+        // For each header, test all payloads
         for header_name in &self.headers {
             let mut times_for_header: Vec<u128> = Vec::new();
 
-            // Exibe início dos testes para este header
+            // Display start of tests for this header
             TerminalUI::print_header_test_start(header_name, true);
 
             for payload in &self.payloads {
                 completed_tests += 1;
 
-                // Atualiza a barra de progresso
+                // Update progress bar
                 TerminalUI::update_progress_bar(completed_tests, total_tests, header_name, payload);
 
-                // Executa o teste de injeção
+                // Execute injection test
                 match self
                     .scanner
                     .test_injection(&self.url, header_name, payload)
@@ -83,7 +83,7 @@ impl ScanService {
                     Ok(result) => {
                         times_for_header.push(result.duration_ms);
 
-                        // Exibe o resultado do teste
+                        // Display test result
                         TerminalUI::print_test_result(
                             &self.url,
                             header_name,
@@ -95,33 +95,33 @@ impl ScanService {
                             &result.reason,
                         );
 
-                        // Se a resposta for suspeita, adiciona aos resultados
+                        // If response is suspicious, add to results
                         if result.suspicious {
                             suspicious_results.push(result);
                         }
                     }
                     Err(e) => {
-                        eprintln!("Erro ao testar injeção: {}", e);
+                        eprintln!("Error testing injection: {}", e);
                     }
                 }
 
-                // Pausa breve entre requisições para não sobrecarregar o servidor
+                // Brief pause between requests to not overload the server
                 tokio::time::sleep(Duration::from_millis(100)).await;
             }
 
-            // Armazena resultados de tempo para este header
+            // Store time results for this header
             header_results.insert(header_name.clone(), times_for_header);
         }
 
         Ok((suspicious_results, header_results))
     }
 
-    /// Retorna o número total de testes que serão realizados
+    /// Returns total number of tests to be performed
     pub fn total_tests(&self) -> usize {
         self.headers.len() * self.payloads.len()
     }
 
-    /// Retorna referências aos headers e payloads
+    /// Returns references to headers and payloads
     pub fn get_test_data(&self) -> (&[String], &[String]) {
         (&self.headers, &self.payloads)
     }

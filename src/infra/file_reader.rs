@@ -6,12 +6,12 @@ use std::path::Path;
 pub struct FileReader;
 
 impl FileReader {
-    /// Lê o conteúdo de um arquivo de texto e retorna as linhas não vazias e não comentadas
+    /// Reads the content of a text file and returns non-empty and non-commented lines
     pub fn read_lines_from_file<P: AsRef<Path>>(path: P) -> Result<Vec<String>> {
         let content = fs::read_to_string(&path)
-            .with_context(|| format!("Erro ao ler o arquivo: {}", path.as_ref().display()))?;
+            .with_context(|| format!("Error reading file: {}", path.as_ref().display()))?;
 
-        // Filtra linhas vazias e comentários
+        // Filter empty lines and comments
         let lines: Vec<String> = content
             .lines()
             .filter(|line| !line.is_empty() && !line.starts_with('#'))
