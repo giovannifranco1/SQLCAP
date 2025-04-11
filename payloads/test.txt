@@ -1,1 +1,0 @@
-{"query": "' OR 1=1 --", "target": "login"} 

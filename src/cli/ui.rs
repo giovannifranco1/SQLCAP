@@ -130,6 +130,15 @@ impl TerminalUI {
         }
     }
 
+    /// Prints a message about debug being enabled
+    pub fn print_debug_enabled(debug_file: &str) {
+        println!(
+            "{} {}",
+            "🐛 Debug mode enabled. Requests will be logged to:".bright_yellow(),
+            debug_file.bright_white().bold()
+        );
+    }
+
     /// Displays preparation information
     pub fn print_preparation_info(
         headers_count: usize,
