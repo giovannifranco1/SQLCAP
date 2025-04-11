@@ -1,4 +1,3 @@
-```
   ██████   █████   ██▓     ▄████▄   ▄▄▄       ██▓███  
  ▒██    ▒ ▒██▓  ██▒▓██▒    ▒██▀ ▀█  ▒████▄    ▓██░  ██▒
  ░ ▓██▄   ▒██▒  ██░▒██░    ▒▓█    ▄ ▒██  ▀█▄  ▓██░ ██▓▒
@@ -11,9 +10,9 @@
                            ░                           
 ```
 
-# SQLCAP - SQL Injection Scanner
+# SQLCAP - SQL Capture and Analysis Platform
 
-SQLCAP (SQL Injection Scanner) is a Rust command-line tool designed to detect SQL injection vulnerabilities in HTTP headers and form parameters, using a modular and object-oriented approach.
+SQLCAP (SQL Capture and Analysis Platform) is a Rust command-line tool designed to detect SQL injection vulnerabilities in HTTP headers and form parameters, using a modular and object-oriented approach.
 
 ## Features
 

