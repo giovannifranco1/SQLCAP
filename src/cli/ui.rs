@@ -145,7 +145,7 @@ impl TerminalUI {
         payloads_count: usize,
         verbose: bool,
         headers: &[String],
-        payloads: &[String],
+        _payloads: &[String],
     ) {
         Self::print_section_header("🔍 PREPARATION");
         println!(

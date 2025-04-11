@@ -20,11 +20,8 @@ pub struct ScanService {
     csrf_token: Option<String>,
     csrf_field: String,
     csrf_cookie_field: Option<String>,
-    debug: bool,
-    debug_file: String,
     body_injection: bool,
     injection_field: String,
-    field_array: Vec<String>,
 }
 
 impl ScanService {
@@ -104,11 +101,8 @@ impl ScanService {
             csrf_token,
             csrf_field: csrf_field.to_string(),
             csrf_cookie_field: csrf_cookie_field.map(|s| s.to_string()),
-            debug,
-            debug_file: debug_file.as_ref().to_string_lossy().to_string(),
             body_injection,
             injection_field: injection_field.to_string(),
-            field_array: Vec::new(),
         })
     }
 

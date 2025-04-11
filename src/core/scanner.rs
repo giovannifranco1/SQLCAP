@@ -2,14 +2,13 @@ use crate::core::logger::RequestLogger;
 use crate::core::models::{Baseline, RequestDebugInfo, ScanResult};
 use anyhow::{Context, Result};
 use chrono::Utc;
-use reqwest::{Client, Method, StatusCode};
+use reqwest::{Client, Method};
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
 
 /// Scanner principal para detecção de vulnerabilidades SQL Injection em headers
 pub struct SqliScanner {
     client: Client,
-    timeout: u64,
     baseline: Option<Baseline>,
     logger: Option<RequestLogger>,
 }
@@ -27,7 +26,6 @@ impl SqliScanner {
 
         Ok(Self {
             client,
-            timeout: timeout_ms,
             baseline: None,
             logger: None,
         })
@@ -216,68 +214,5 @@ impl SqliScanner {
             .context("Failed to read baseline response body")?;
 
         Ok(Baseline::new(status, duration.as_millis(), body.len()))
-    }
-
-    /// Analisa a resposta para detecção de vulnerabilidades
-    fn analyze_response(
-        &self,
-        status: StatusCode,
-        duration_ms: u128,
-        body_size: usize,
-        baseline_status: &StatusCode,
-        baseline_duration: u128,
-        baseline_size: usize,
-    ) -> (bool, Option<String>) {
-        let mut suspicious = false;
-        let mut reason = None;
-
-        // Verificação de time-based SQLi
-        if duration_ms > self.timeout as u128 && duration_ms > (baseline_duration * 2) {
-            suspicious = true;
-            reason = Some(format!(
-                "⏱️  Tempo de resposta anômalo: {}ms (base: {}ms)",
-                duration_ms, baseline_duration
-            ));
-        }
-
-        // Verificação de diferença no tamanho da resposta (boolean-based)
-        let size_ratio = if baseline_size > 0 {
-            body_size as f64 / baseline_size as f64
-        } else {
-            0.0
-        };
-
-        if body_size != baseline_size && (size_ratio > 1.5 || size_ratio < 0.5) {
-            suspicious = true;
-            if let Some(r) = reason {
-                reason = Some(format!(
-                    "{}, 📏 tamanho de resposta anômalo: {} bytes (base: {} bytes)",
-                    r, body_size, baseline_size
-                ));
-            } else {
-                reason = Some(format!(
-                    "📏 Tamanho de resposta anômalo: {} bytes (base: {} bytes)",
-                    body_size, baseline_size
-                ));
-            }
-        }
-
-        // Verificação de códigos de status diferentes
-        if status != *baseline_status {
-            suspicious = true;
-            if let Some(r) = reason {
-                reason = Some(format!(
-                    "{}, 🔢 código de status diferente: {} (base: {})",
-                    r, status, baseline_status
-                ));
-            } else {
-                reason = Some(format!(
-                    "🔢 Código de status diferente: {} (base: {})",
-                    status, baseline_status
-                ));
-            }
-        }
-
-        (suspicious, reason)
     }
 }
